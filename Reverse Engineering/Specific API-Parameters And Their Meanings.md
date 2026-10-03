@@ -130,4 +130,9 @@ Explanations on CreateFileA :
      failure  -> INVALID_HANDLE_VALUE (0xFFFFFFFF / -1)   [check GetLastError]
 
 
+* If you see those parameters --> They are prolly related with that function
+
+	((int (__fastcall *)(__int64, __int64 *, _QWORD, __int64 *, int, int))(func_addr))(X,&Y,0,&Z,12288(Or 0x3000),4)  --> NtAllocateVirtualMemory(Because 0x3000 directly means MEM_COMMIT | MEM_RESERVE at windows. While allocating a new memory at RAM this value is necessary. 0x04(4) also means PAGE_READWRITE. In memory there is only one Native Windows API that allocates memory with 0x3000 mode and PAGE_READWRITE and its NtAllocateVirtualMemory)
+	((int (__fastcall *)(__int64, __int64 *, _QWORD, __int64 *, int, int))(func_addr))(X,&Y,&Z,64(0x40),&E) --> NtProtectVirtualMemory(Especially if this calling convention comes just right after the NtAllocateVirtualMemory its a high chance that its NtProtectVirtualMemory because it tooks a long list and also 0x40 here means PAGE_EXECUTE_READWRITE(RWX) To run code in the memory that memory region should be in the need of X(execution) Permission)
+	((int (__fastcall *)(__int64 *, __int64, _QWORD, __int64, __int64, __int64, _DWORD, _QWORD, _QWORD, _QWORD, _QWORD))(...))(&X,0x1FFFFF,0,Y,Z,E,0,0,0,0,0) --> NtCreateThreadEx(Here again its obvious that 0x1FFFFF means THREAD_ALL_ACCESS at windows and also classic createthread and createremotethread functions are in user-mode and gets less parameters while this one here gets 11 parameters.)
 

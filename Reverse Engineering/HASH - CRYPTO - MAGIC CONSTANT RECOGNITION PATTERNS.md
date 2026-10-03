@@ -132,3 +132,4 @@ IV(Initialization Vector): 16 random bytes that seed CBC. IV is not secret. It c
 
 
  PKCS7 padding — AES only works on multiples of 16 bytes. If your file is 1000 bytes, you need 24 more to reach 1008.PKCS7 says: fill those N missing bytes with the byte value N. So 5 missing bytes → append 05 05 05 05 05. On decrypt you read the last byte, strip that many, done. A file already a multiple of 16 gets a full 16-byte pad (10 10 …) so there's always something to strip. It's just the "how do we know where the real data ends?" convention — a formatting rule, not crypto.
+ 
