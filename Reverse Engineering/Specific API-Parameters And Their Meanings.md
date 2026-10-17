@@ -65,6 +65,8 @@ size_t fwrite(
   0x40000    MEM_WRITE_WATCH     -> track writes to the region
   0x20000000 MEM_LARGE_PAGES     -> large-page allocation
 
+ 
+
 
 
 HANDLE CreateFileA(

@@ -108,9 +108,9 @@ Distinguishing RC5 and RC6 hashes between each other :
    (that's 2B+1) followed by a multiply, plus a fixed rotate by 5 (rol ..., 5).
   - RC5 has NO multiply — only data-dependent rotates (rol/ror by a variable count in cl), XOR, and add.
 
-Hash Pattern --> Init -> Update -> Final Processes
+- Hash Pattern --> Init -> Update -> Final Processes
 
-CIPHER Pattern --> KeySchedule -> RoundFunction -> BlockLoop
+- CIPHER Pattern --> KeySchedule -> RoundFunction -> BlockLoop
 
 
 - Symmetric (AES): one key encrypts and decrypts. Fast — a modern CPU does gigabytes/sec. Problem: how do you share
@@ -119,17 +119,41 @@ CIPHER Pattern --> KeySchedule -> RoundFunction -> BlockLoop
   publish the public key freely; you hoard the private key. Solves the sharing problem. Cost: ~1000× slower than AES and
   only useful on small data (a few hundred bytes at a time).
 
-AES -> A block cipher : encrypts in fixed 16-byte chunks. Key size = 128/192/256 bits. And its also deterministic.
-Same plaintext + same key -> same ciphertext.
+- AES -> A block cipher : encrypts in fixed 16-byte chunks. Key size = 128/192/256 bits. And its also deterministic.
+  Same plaintext + same key -> same ciphertext.
 
-It has 2 modes :
+- It has 2 modes :
 
-ECB: encrypts each 16-byte block independently. Leaks pattern. Never used.If its ever used its a vulnerability.
+	ECB: encrypts each 16-byte block independently. Leaks pattern. Never used.If its ever used its a vulnerability.
+	 CBC:each block gets xored with the previous ciphertext before encryption so that kills the pattern leaking problem. But this needs an some kind of salt we call this Initialization Vector(IV).
 
-CBC:each block gets xored with the previous ciphertext before encryption so that kills the pattern leaking problem. But this needs an some kind of salt we call this Initialization Vector(IV).
-
-IV(Initialization Vector): 16 random bytes that seed CBC. IV is not secret. It can be published publicly. Its not leaking something by just only itself.
+- IV(Initialization Vector): 16 random bytes that seed CBC. IV is not secret. It can be published publicly. Its not leaking something by just only itself.
 
 
- PKCS7 padding — AES only works on multiples of 16 bytes. If your file is 1000 bytes, you need 24 more to reach 1008.PKCS7 says: fill those N missing bytes with the byte value N. So 5 missing bytes → append 05 05 05 05 05. On decrypt you read the last byte, strip that many, done. A file already a multiple of 16 gets a full 16-byte pad (10 10 …) so there's always something to strip. It's just the "how do we know where the real data ends?" convention — a formatting rule, not crypto.
- 
+ - PKCS7 padding — AES only works on multiples of 16 bytes. If your file is 1000 bytes, you need 24 more to reach 1008.PKCS7 says: fill those N missing bytes with the byte value N. So 5 missing bytes → append 05 05 05 05 05. On decrypt you read the last byte, strip that many, done. A file already a multiple of 16 gets a full 16-byte pad (10 10 …) so there's always something to strip. It's just the "how do we know where the real data ends?" convention — a formatting rule, not crypto.
+
+- RC4 Crypto Algorithm Pattern:
+
+	RC4 = KSA(Key Scheduling Algorithm) + PRGA(Pseudo-Random Generation Algorithm)
+
+	 - KSA Pattern:
+	 // S-box: 256 byte
+	uint8_t S[256];
+	// 1. Start: S[i] = i
+	for (int i = 0; i < 256; i++)
+    S[i] = i;
+	// 2. mix(swap)
+	int j = 0;
+	for (int i = 0; i < 256; i++) {
+    j = (j + S[i] + key[i % keylen]) % 256;
+    swap(S[i], S[j]);
+	}
+	 - PRGA Pattern:
+	 int i = 0, j = 0;
+	for (int k = 0; k < len; k++) {
+    i = (i + 1) % 256;
+    j = (j + S[i]) % 256;
+    swap(S[i], S[j]);
+    uint8_t K = S[(S[i] + S[j]) % 256];
+    output[k] = input[k] ^ K;
+	}
