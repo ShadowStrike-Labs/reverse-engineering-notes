@@ -138,3 +138,18 @@ Explanations on CreateFileA :
 	((int (__fastcall *)(__int64, __int64 *, _QWORD, __int64 *, int, int))(func_addr))(X,&Y,&Z,64(0x40),&E) --> NtProtectVirtualMemory(Especially if this calling convention comes just right after the NtAllocateVirtualMemory its a high chance that its NtProtectVirtualMemory because it tooks a long list and also 0x40 here means PAGE_EXECUTE_READWRITE(RWX) To run code in the memory that memory region should be in the need of X(execution) Permission)
 	((int (__fastcall *)(__int64 *, __int64, _QWORD, __int64, __int64, __int64, _DWORD, _QWORD, _QWORD, _QWORD, _QWORD))(...))(&X,0x1FFFFF,0,Y,Z,E,0,0,0,0,0) --> NtCreateThreadEx(Here again its obvious that 0x1FFFFF means THREAD_ALL_ACCESS at windows and also classic createthread and createremotethread functions are in user-mode and gets less parameters while this one here gets 11 parameters.)
 
+
+  BOOL CreateProcessW(
+      LPCWSTR               lpApplicationName,
+      LPWSTR                lpCommandLine,
+      LPSECURITY_ATTRIBUTES lpProcessAttributes,
+      LPSECURITY_ATTRIBUTES lpThreadAttributes,
+      BOOL                  bInheritHandles,
+      DWORD                 dwCreationFlags,
+      LPVOID                lpEnvironment,
+      LPCWSTR               lpCurrentDirectory,
+      LPSTARTUPINFOW        lpStartupInfo,
+      LPPROCESS_INFORMATION lpProcessInformation
+	 );
+  
+

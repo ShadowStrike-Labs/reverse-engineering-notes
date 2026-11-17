@@ -50,6 +50,16 @@
 	For example if that dll has a MessageBoxA call inside itself , that dll is in the need of finding that Function's address itself by calculating its offset.
 
 
+- GetStdHandle constants:
+	 STD_INPUT_HANDLE -->0xFFFFFFF6(signed -10) stdin
+	 STD_OUTPUT_HANDLE-->0xFFFFFFF5(signed -11) stdout
+	 STD_ERROR_HANDLE -->0xFFFFFFF4(signed -12) stderr
+
+* Fundamental VA/RVA Formulas
+	 VA = ImageBase + RVA
+	 RVA = VA - ImageBase
+	 ImageBase = VA - RVA
+
 
 
 
